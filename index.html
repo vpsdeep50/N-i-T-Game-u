@@ -138,6 +138,15 @@
             let score = 0;
             let currentWord = "";
             let wordList = ["Con Mèo", "Cá Chép", "Chó Sói", "Voi Con", "Rắn Hổ", "Lợn Rừng"];
+            let wordConnections = {
+                "Mèo": ["Mèo Con", "Mèo Mướp"],
+                "Con": ["Con Gà", "Con Ve", "Con Chó"],
+                "Gà": ["Gà Con"],
+                "Ve": ["Ve Chó", "Ve Vãn"],
+                "Chó": ["Chó Sói", "Chó Poodle"],
+                "Vãn": ["Vãn Chỉ", "Vãn Lời"]
+            };
+            let wordChain = [];
 
             startBtn.addEventListener("click", () => {
                 startScreen.classList.add("hidden");
@@ -153,6 +162,7 @@
 
             randomWordBtn.addEventListener("click", () => {
                 currentWord = wordList[Math.floor(Math.random() * wordList.length)];
+                wordChain = [currentWord];
                 startGame();
             });
 
@@ -165,6 +175,7 @@
                 let customWord = customStartWordInput.value.trim();
                 if (customWord.split(" ").length === 2) {
                     currentWord = customWord;
+                    wordChain = [currentWord];
                     startGame();
                 }
             });
@@ -184,11 +195,13 @@
 
                 if (isValidAnswer(answer)) {
                     score += 5;
-                    currentWord = answer;
+                    wordChain.push(answer);
+                    currentWord = getNextWord();
                 } else {
                     score -= 5;
                     alert("Sai! Điểm bị trừ 5.");
                     currentWord = wordList[Math.floor(Math.random() * wordList.length)];
+                    wordChain = [currentWord];
                 }
 
                 scoreDisplay.textContent = score;
@@ -196,30 +209,22 @@
                 answerInput.value = "";
             });
 
-            submitAnswerBtn.addEventListener("click", () => {
-    let answer = answerInput.value.trim();
+            function isValidAnswer(answer) {
+                let lastWord = wordChain[wordChain.length - 1].split(" ").pop(); // Lấy từ cuối cùng
 
-    if (isValidAnswer(answer)) {
-        score += 5;
-        currentWord = answer; // Cập nhật từ nối hợp lệ
-    } else {
-        score -= 5;
-        alert("Sai! Điểm bị trừ 5.");
-        currentWord = wordList[Math.floor(Math.random() * wordList.length)]; // Chọn từ ngẫu nhiên khi sai
-    }
+                let answerWords = answer.split(" ");
+                return answerWords.length === 2 && answerWords[0] === lastWord; // Kiểm tra từ nối hợp lệ
+            }
 
-    scoreDisplay.textContent = score;
-    currentWordDisplay.textContent = currentWord;
-    answerInput.value = "";
-});
+            function getNextWord() {
+                let lastWord = wordChain[wordChain.length - 1].split(" ").pop(); // Lấy từ cuối cùng
+                let nextWords = wordConnections[lastWord];
 
-function isValidAnswer(answer) {
-    let words = currentWord.split(" ");
-    let lastWord = words[1]; // Lấy từ cuối của từ hiện tại
-
-    let answerWords = answer.split(" ");
-    return answerWords.length === 2 && answerWords[0] === lastWord; // Kiểm tra từ nối hợp lệ
-}
+                if (nextWords) {
+                    return nextWords[Math.floor(Math.random() * nextWords.length)];
+                }
+                return null; // Nếu không có từ nối tiếp theo
+            }
         });
     </script>
 
