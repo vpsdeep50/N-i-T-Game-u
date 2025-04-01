@@ -84,6 +84,11 @@
             font-weight: bold;
             color: #333;
         }
+        #player-info {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -111,121 +116,142 @@
         <h2 id="current-word"></h2>
         <input type="text" id="answer" placeholder="Nhập từ nối">
         <button id="submit-answer">Gửi</button>
-        <p>🔢 Điểm: <span id="score">0</span></p>
+        <p id="player-info">Tên: <span id="player-name-display"></span> | Điểm: <span id="score-display"></span></p>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const startScreen = document.getElementById("start-screen");
-            const nameScreen = document.getElementById("name-screen");
-            const modeScreen = document.getElementById("mode-screen");
-            const customWordScreen = document.getElementById("custom-word-screen");
-            const gameScreen = document.getElementById("game-screen");
+    const startScreen = document.getElementById("start-screen");
+    const nameScreen = document.getElementById("name-screen");
+    const modeScreen = document.getElementById("mode-screen");
+    const customWordScreen = document.getElementById("custom-word-screen");
+    const gameScreen = document.getElementById("game-screen");
 
-            const startBtn = document.getElementById("start-btn");
-            const confirmNameBtn = document.getElementById("confirm-name");
-            const randomWordBtn = document.getElementById("random-word");
-            const customWordBtn = document.getElementById("custom-word");
-            const startCustomGameBtn = document.getElementById("start-custom-game");
-            const submitAnswerBtn = document.getElementById("submit-answer");
+    const startBtn = document.getElementById("start-btn");
+    const confirmNameBtn = document.getElementById("confirm-name");
+    const randomWordBtn = document.getElementById("random-word");
+    const customWordBtn = document.getElementById("custom-word");
+    const startCustomGameBtn = document.getElementById("start-custom-game");
+    const submitAnswerBtn = document.getElementById("submit-answer");
 
-            const playerNameInput = document.getElementById("player-name");
-            const customStartWordInput = document.getElementById("custom-start-word");
-            const answerInput = document.getElementById("answer");
-            const currentWordDisplay = document.getElementById("current-word");
-            const scoreDisplay = document.getElementById("score");
+    const playerNameInput = document.getElementById("player-name");
+    const customStartWordInput = document.getElementById("custom-start-word");
+    const answerInput = document.getElementById("answer");
+    const currentWordDisplay = document.getElementById("current-word");
+    const scoreDisplay = document.getElementById("score");
 
-            let score = 0;
-            let currentWord = "";
-            let wordList = ["Con Mèo", "Cá Chép", "Chó Sói", "Voi Con", "Rắn Hổ", "Lợn Rừng"];
-            let wordConnections = {
-                "Mèo": ["Mèo Con", "Mèo Mướp"],
-                "Con": ["Con Gà", "Con Ve", "Con Chó"],
-                "Gà": ["Gà Con"],
-                "Ve": ["Ve Chó", "Ve Vãn"],
-                "Chó": ["Chó Sói", "Chó Poodle"],
-                "Vãn": ["Vãn Chỉ", "Vãn Lời"]
-            };
-            let wordChain = [];
+    let score = 0;
+    let currentWord = "";
+    let wordList = ["Con Mèo", "Cá Chép", "Chó Sói", "Voi Con", "Rắn Hổ", "Lợn Rừng"];
+    let wordConnections = {
+       // TỪ NỐI CỦA MÈO
+        "Mèo": ["Mèo Con", "Mèo Mướp","Mèo Cam","Mèo Đen","Mèo Trắng"],
+         "Cam": ["Cam Ép", "Cam Vàng","Campuchia","Cam Héo","Cam Tươi"],
+         "Đen": ["Đen Xì", "Đen Óng", "Đen Xẫm", "Đen Thui","Đen Đủi","Đen Tuyền","Đen Trắng"],
+         "Trắng": ["Trắng Tinh", "Trắng Xóa","Trắng Đen","Trắng Hồng"],
+         "Ép": ["Ép Cam", "Ép Mía","Ép Dưa","Ép Nho","Ép Táo"],
+         "Vàng": ["Vàng Đen", "Vàng Trắng"],
+        // Chỗ này lười viết soon
+         "Chó": ["Chó Sói", "Chó Vàng"],
+         "Chó": ["Chó Sói", "Chó Vàng"],
+        "Con": ["Con Gà", "Con Ve", "Con Chó"],
+        "Mướp": ["Mướp Đắng", "Mướt Ngọt"],
+        "Gà": ["Gà Con"],
+        "Ve": ["Ve Chó", "Ve Vãn"],
+        "Chó": ["Chó Sói", "Chó Vàng"],
+        "Sói": ["Sói Con", "Sói Vàng"],
 
-            startBtn.addEventListener("click", () => {
-                startScreen.classList.add("hidden");
-                nameScreen.classList.remove("hidden");
-            });
 
-            confirmNameBtn.addEventListener("click", () => {
-                if (playerNameInput.value.trim() !== "") {
-                    nameScreen.classList.add("hidden");
-                    modeScreen.classList.remove("hidden");
-                }
-            });
 
-            randomWordBtn.addEventListener("click", () => {
-                currentWord = wordList[Math.floor(Math.random() * wordList.length)];
-                wordChain = [currentWord];
-                startGame();
-            });
 
-            customWordBtn.addEventListener("click", () => {
-                modeScreen.classList.add("hidden");
-                customWordScreen.classList.remove("hidden");
-            });
 
-            startCustomGameBtn.addEventListener("click", () => {
-                let customWord = customStartWordInput.value.trim();
-                if (customWord.split(" ").length === 2) {
-                    currentWord = customWord;
-                    wordChain = [currentWord];
-                    startGame();
-                }
-            });
 
-            function startGame() {
-                modeScreen.classList.add("hidden");
-                customWordScreen.classList.add("hidden");
-                gameScreen.classList.remove("hidden");
+        
+        "Vãn": ["Vãn Chỉ", "Vãn Lời"]
+        
+    };
+    let wordChain = [];
 
-                currentWordDisplay.textContent = currentWord;
-                score = 0;
-                scoreDisplay.textContent = score;
-            }
+    startBtn.addEventListener("click", () => {
+        startScreen.classList.add("hidden");
+        nameScreen.classList.remove("hidden");
+    });
 
-            submitAnswerBtn.addEventListener("click", () => {
-                let answer = answerInput.value.trim();
+    let playerName = "";
+    confirmNameBtn.addEventListener("click", () => {
+        if (playerNameInput.value.trim() !== "") {
+            playerName = playerNameInput.value.trim();
+            document.getElementById("player-name-display").textContent = playerName;
+            document.getElementById("score-display").textContent = score;
 
-                if (isValidAnswer(answer)) {
-                    score += 5;
-                    wordChain.push(answer);
-                    currentWord = getNextWord();
-                } else {
-                    score -= 5;
-                    alert("Sai! Điểm bị trừ 5.");
-                    currentWord = wordList[Math.floor(Math.random() * wordList.length)];
-                    wordChain = [currentWord];
-                }
+            nameScreen.classList.add("hidden");
+            modeScreen.classList.remove("hidden");
+        }
+    });
 
-                scoreDisplay.textContent = score;
-                currentWordDisplay.textContent = currentWord;
-                answerInput.value = "";
-            });
+    randomWordBtn.addEventListener("click", () => {
+        currentWord = wordList[Math.floor(Math.random() * wordList.length)];
+        wordChain = [currentWord];
+        startGame();
+    });
 
-            function isValidAnswer(answer) {
-                let lastWord = wordChain[wordChain.length - 1].split(" ").pop(); // Lấy từ cuối cùng
+    customWordBtn.addEventListener("click", () => {
+        modeScreen.classList.add("hidden");
+        customWordScreen.classList.remove("hidden");
+    });
 
-                let answerWords = answer.split(" ");
-                return answerWords.length === 2 && answerWords[0] === lastWord; // Kiểm tra từ nối hợp lệ
-            }
+    startCustomGameBtn.addEventListener("click", () => {
+        let customWord = customStartWordInput.value.trim();
+        if (customWord.split(" ").length === 2) {
+            currentWord = customWord;
+            wordChain = [currentWord];
+            startGame();
+        }
+    });
 
-            function getNextWord() {
-                let lastWord = wordChain[wordChain.length - 1].split(" ").pop(); // Lấy từ cuối cùng
-                let nextWords = wordConnections[lastWord];
+    function startGame() {
+        modeScreen.classList.add("hidden");
+        customWordScreen.classList.add("hidden");gameScreen.classList.remove("hidden");
 
-                if (nextWords) {
-                    return nextWords[Math.floor(Math.random() * nextWords.length)];
-                }
-                return null; // Nếu không có từ nối tiếp theo
-            }
-        });
+currentWordDisplay.textContent = currentWord;
+score = 0;
+scoreDisplay.textContent = score;
+}
+
+submitAnswerBtn.addEventListener("click", () => {
+let answer = answerInput.value.trim();
+
+if (isValidAnswer(answer)) {
+    score += 5;
+    wordChain.push(answer);
+    currentWord = getNextWord();
+} else {
+    score -= 5;
+    alert("Sai! Điểm bị trừ 5.");
+}
+
+scoreDisplay.textContent = score;
+currentWordDisplay.textContent = currentWord || "Không có từ nối tiếp";
+answerInput.value = "";
+});
+
+function isValidAnswer(answer) {
+let lastWord = wordChain[wordChain.length - 1].split(" ").pop(); // Lấy từ cuối cùng
+
+let answerWords = answer.split(" ");
+return answerWords.length === 2 && answerWords[0] === lastWord; // Kiểm tra từ nối hợp lệ
+}
+
+function getNextWord() {
+let lastWord = wordChain[wordChain.length - 1].split(" ").pop(); // Lấy từ cuối cùng
+let nextWords = wordConnections[lastWord];
+
+if (nextWords) {
+    return nextWords[Math.floor(Math.random() * nextWords.length)];
+}
+return null; // Nếu không có từ nối tiếp theo
+}
+});
     </script>
 
 </body>
