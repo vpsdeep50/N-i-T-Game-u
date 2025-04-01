@@ -196,13 +196,30 @@
                 answerInput.value = "";
             });
 
-            function isValidAnswer(answer) {
-                let words = currentWord.split(" ");
-                let lastWord = words[1];
+            submitAnswerBtn.addEventListener("click", () => {
+    let answer = answerInput.value.trim();
 
-                let answerWords = answer.split(" ");
-                return answerWords.length === 2 && answerWords[0] === lastWord;
-            }
+    if (isValidAnswer(answer)) {
+        score += 5;
+        currentWord = answer; // Cập nhật từ nối hợp lệ
+    } else {
+        score -= 5;
+        alert("Sai! Điểm bị trừ 5.");
+        currentWord = wordList[Math.floor(Math.random() * wordList.length)]; // Chọn từ ngẫu nhiên khi sai
+    }
+
+    scoreDisplay.textContent = score;
+    currentWordDisplay.textContent = currentWord;
+    answerInput.value = "";
+});
+
+function isValidAnswer(answer) {
+    let words = currentWord.split(" ");
+    let lastWord = words[1]; // Lấy từ cuối của từ hiện tại
+
+    let answerWords = answer.split(" ");
+    return answerWords.length === 2 && answerWords[0] === lastWord; // Kiểm tra từ nối hợp lệ
+}
         });
     </script>
 
