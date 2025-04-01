@@ -5,29 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Nối Từ</title>
     <style>
+        /* Nền gradient động */
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 50px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad0c4, #ffdde1);
+            background-size: 400% 400%;
+            animation: gradientBG 5s ease infinite;
         }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Hiệu ứng xuất hiện */
         .hidden {
             display: none;
         }
+
+        /* Thiết kế input */
         input {
-            padding: 8px;
+            padding: 12px;
             margin: 10px;
+            border: 2px solid #ff758c;
+            border-radius: 5px;
+            outline: none;
+            font-size: 16px;
+            transition: 0.3s;
         }
+
+        input:focus {
+            border-color: #ff416c;
+            box-shadow: 0px 0px 10px rgba(255, 65, 108, 0.5);
+        }
+
+        /* Nút bấm đẹp hơn */
         button {
-            padding: 10px;
+            padding: 12px 20px;
             margin: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
+            transition: 0.3s;
+            background: linear-gradient(135deg, #ff758c, #ff416c);
+            color: white;
+            box-shadow: 0px 5px 15px rgba(255, 65, 108, 0.3);
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 10px 20px rgba(255, 65, 108, 0.5);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Giao diện hiển thị từ */
+        h2 {
+            font-size: 24px;
+            color: #ff416c;
+            text-shadow: 2px 2px 5px rgba(255, 65, 108, 0.3);
+        }
+
+        /* Điểm số */
+        p {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
         }
     </style>
 </head>
 <body>
 
     <div id="start-screen">
-        <button id="start-btn">Đại chiến nối từ</button>
+        <button id="start-btn">🔥 Đại chiến nối từ 🔥</button>
     </div>
 
     <div id="name-screen" class="hidden">
@@ -36,8 +98,8 @@
     </div>
 
     <div id="mode-screen" class="hidden">
-        <button id="random-word">Từ nối ngẫu nhiên</button>
-        <button id="custom-word">Tạo từ nối</button>
+        <button id="random-word">🎲 Từ nối ngẫu nhiên</button>
+        <button id="custom-word">✏️ Tạo từ nối</button>
     </div>
 
     <div id="custom-word-screen" class="hidden">
@@ -49,7 +111,7 @@
         <h2 id="current-word"></h2>
         <input type="text" id="answer" placeholder="Nhập từ nối">
         <button id="submit-answer">Gửi</button>
-        <p>Điểm: <span id="score">0</span></p>
+        <p>🔢 Điểm: <span id="score">0</span></p>
     </div>
 
     <script>
@@ -119,11 +181,13 @@
 
             submitAnswerBtn.addEventListener("click", () => {
                 let answer = answerInput.value.trim();
+
                 if (isValidAnswer(answer)) {
                     score += 5;
                     currentWord = answer;
                 } else {
                     score -= 5;
+                    alert("Sai! Điểm bị trừ 5.");
                     currentWord = wordList[Math.floor(Math.random() * wordList.length)];
                 }
 
@@ -134,7 +198,10 @@
 
             function isValidAnswer(answer) {
                 let words = currentWord.split(" ");
-                return answer.startsWith(words[1] + " ");
+                let lastWord = words[1];
+
+                let answerWords = answer.split(" ");
+                return answerWords.length === 2 && answerWords[0] === lastWord;
             }
         });
     </script>
